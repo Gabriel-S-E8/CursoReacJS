@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import logo from "../../assets/logo.png";
+import { AuthContext } from "../../Contexts/AuthContext";
+import { toast } from "react-toastify";
 
 
 export default function SignUp() {
@@ -9,13 +11,18 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { signUp, loading } = useContext(AuthContext);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (name !== "" && email !== "" && password !== "") {
-      
+      await signUp(email, password, name);
+      setEmail("");
+      setPassword("");
+      setName("");
     }else{
-        alert('Preencha todos os campos');
+        toast.error("Preencha todos os campos 😆");
     }
   };
 
@@ -50,7 +57,9 @@ export default function SignUp() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button type="submit">Cadastrar</button>
+          <button type="submit">
+            {loading ? "Carregando..." : "Cadastrar"}
+          </button>
         </form>
 
         <h3>

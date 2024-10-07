@@ -1,10 +1,11 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { auth } from "../../db/firebaseConnection";
+// import { auth } from "../../db/firebaseConnection";
 import { AuthContext } from "../../Contexts/AuthContext";
 
 import "./signin.css";
 import logo from "../../assets/logo.png";
+import { toast } from "react-toastify";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
@@ -12,13 +13,13 @@ export default function Signin() {
 
   const { signIn } = useContext(AuthContext);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     
     if (email !== "" && password !== "") {
       signIn(email, password);
     } else {
-      alert("Preencha todos os campos");
+      toast.error("Preencha todos os campos 😆");
     }
   };
 

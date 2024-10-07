@@ -54,7 +54,7 @@ form h1{
     background-color: #fff;
 }
 
-.login button{
+form button{
     height: 35px;
     border-radius: 8px;
     border: 0;
