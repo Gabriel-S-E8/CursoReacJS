@@ -132,5 +132,32 @@ export const PageActions = styled.div`
 
 
 export const FilterList = styled.div`
-    
+    margin: 15px 0;
+    button {
+        outline: 0;
+        border: 1px solid #222;
+        background-color: #222;
+        color: #fff;
+        border-radius: 18px;
+        padding: 5px 15px;
+        margin: 0 3px;
+        justify-content: center;
+        align-items: center;
+        transition: 0.3s;
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        &:hover {
+            background: #0071db;
+            border: 1px solid #0071db;
+        }
+
+        &:nth-child(${props => props.active + 1}) {
+            background: #0071db;
+            border: 1px solid #0071db;
+        }
+    }
 `;

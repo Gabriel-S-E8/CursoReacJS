@@ -16,6 +16,20 @@ export default function Repositorio({ match }) {
     const [issues, setIssues] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
+    const [filter, setFilter] = useState([{
+        state: 'all',
+        label: 'ALL',
+        active: true,
+    }, {
+        state: 'open',
+        label: 'Open',
+        active: false,
+    },{
+        state: 'closed',
+        label: 'Closed',
+        active: false,
+    }]);
+    const [filterIndex, setFilterIndex] = useState(0);
 
     useEffect(() => {
         async function loadRepo() {
@@ -24,7 +38,7 @@ export default function Repositorio({ match }) {
                 api.get(`repos/${nomeRepo}`),
                 api.get(`repos/${nomeRepo}/issues`, {
                     params: {
-                        state: 'open',
+                        state: filter.find((f) => f.active).state,
                         per_page: 5,
                     },
                 }),
@@ -36,14 +50,14 @@ export default function Repositorio({ match }) {
         }
 
         loadRepo();
-    }, [match.params.repositorio]);
+    }, [match.params.repositorio, filter]);
 
     useEffect(() => {
         async function loadIssues() {
             const nomeRepo = decodeURIComponent(match.params.repositorio);
             const response = await api.get(`repos/${nomeRepo}/issues`, {
                 params: {
-                    state: 'open',
+                    state: filter[filterIndex].state,
                     per_page: 5,
                     page,
                 },
@@ -53,10 +67,19 @@ export default function Repositorio({ match }) {
         }
 
         loadIssues();
-    }, [match.params.repositorio, page]);
+    }, [match.params.repositorio, page, filterIndex, filter]);
 
     function handlePage(action) {
         setPage(action === 'back' ? page - 1 : page + 1);
+    }
+
+    function handleFilter(index) {
+        setFilterIndex(index);
+        const filterActual = filter[index];
+        setFilter(filter.map((f) => ({
+            ...f,
+            active: filterActual.label === f.label,
+        })));
     }
 
     if (loading) {
@@ -82,8 +105,12 @@ export default function Repositorio({ match }) {
                     <p>{repositorio.description}</p>
                 </Owner>
 
-                <FilterList>
-                    
+                <FilterList active={filterIndex}>
+                    {filter.map((filter, index) => (
+                        <button type='button' key={String(index)} onClick={() => handleFilter(index)}>
+                            {filter.label}
+                        </button>
+                    ))}
                 </FilterList>
 
                 <IssuesList>
